@@ -1,146 +1,89 @@
 module nvdla_wrapper (
   // Clock
-  ,dla_core_clk                       //|< i
-  ,dla_csb_clk                        //|< i
-  ,global_clk_ovr_on                  //|< i
-  ,tmc2slcg_disable_clock_gating      //|< i
-  ,pclk                               //|< i
+  input  dla_core_clk;                //|< i
+  input  dla_csb_clk;                 //|< i
+  input  global_clk_ovr_on;           //|< i
+  input  tmc2slcg_disable_clock_gating;//|< i
 
   // Reset
-  ,dla_reset_rstn                     //|< i
-  ,direct_reset_                      //|< i
-  ,prstn                              //|< i
+  input  dla_reset_rstn;              //|< i
+  input  direct_reset_;               //|< i
 
   // Test mode
-  ,test_mode                          //|< i
+  input  test_mode;                   //|< i
 
   // APB
-  ,psel                               //|< i
-  ,penable                            //|< i
-  ,pwrite                             //|< i
-  ,paddr                              //|< i
-  ,pwdata                             //|< i
-  ,prdata                             //|> o
-  ,pready                             //|> o
+  input pclk;                         //|< i
+  input prstn;                        //|< i
+  input psel;                         //|< i
+  input penable;                      //|< i
+  input pwrite;                       //|< i
+  input [31:0] paddr;                 //|< i
+  input [31:0] pwdata;                //|< i
+  output [31:0] prdata;               //|> o
+  output pready;                      //|> o
 
   // AXI
-  ,dbb_aw_awvalid                     //|> o
-  ,dbb_aw_awready                     //|< i
-  ,dbb_aw_awid                        //|> o
-  ,dbb_aw_awlen                       //|> o
-  ,dbb_aw_awaddr                      //|> o
+  output dbb_aw_awvalid;              //|> o
+  input  dbb_aw_awready;              //|< i
+  output [7:0] dbb_aw_awid;           //|> o
+  output [3:0] dbb_aw_awlen;          //|> o
+  output [63:0] dbb_aw_awaddr;        //|> o
   
-  ,dbb_w_wvalid                       //|> o
-  ,dbb_w_wready                       //|< i
-  ,dbb_w_wdata                        //|> o
-  ,dbb_w_wstrb                        //|> o
-  ,dbb_w_wlast                        //|> o
+  output dbb_w_wvalid;                //|> o
+  input  dbb_w_wready;                //|< i
+  output [511:0] dbb_w_wdata;         //|> o
+  output [63:0] dbb_w_wstrb;          //|> o
+  output dbb_w_wlast;                 //|> o
 
-  ,dbb_b_bvalid                       //|< i
-  ,dbb_b_bready                       //|> o
-  ,dbb_b_bid                          //|< i
+  input  dbb_b_bvalid;                //|< i
+  output dbb_b_bready;                //|> o
+  input  [7:0] dbb_b_bid;             //|< i
 
-  ,dbb_ar_arvalid                     //|> o
-  ,dbb_ar_arready                     //|< i
-  ,dbb_ar_arid                        //|> o
-  ,dbb_ar_arlen                       //|> o
-  ,dbb_ar_araddr                      //|> o
+  output dbb_ar_arvalid;              //|> o
+  input  dbb_ar_arready;              //|< i
+  output [7:0] dbb_ar_arid;           //|> o
+  output [3:0] dbb_ar_arlen;          //|> o
+  output [63:0] dbb_ar_araddr;        //|> o
 
-  ,dbb_r_rvalid                       //|< i
-  ,dbb_r_rready                       //|> o
-  ,dbb_r_rid                          //|< i
-  ,dbb_r_rlast                        //|< i
-  ,dbb_r_rdata                        //|< i
-
-  // Interrupt
-  ,dla_intr                           //|> o
-);
-
-  // Clock
-  input  dla_core_clk;
-  input  dla_csb_clk;
-  input  global_clk_ovr_on;
-  input  tmc2slcg_disable_clock_gating;
-
-  // Reset
-  input  dla_reset_rstn;
-  input  direct_reset_;
-
-  // Test mode
-  input  test_mode;
-
-  // APB
-  input pclk;
-  input prstn;
-  input psel;
-  input penable;
-  input pwrite;
-  input [31:0] paddr;
-  input [31:0] pwdata;
-  output [31:0] prdata;
-  output pready;
-
-  // APB to CSB
-  output apb2csb_valid;
-  input  apb2csb_ready;
-  output [15:0] apb2csb_addr;
-  output [31:0] apb2csb_wdat;
-  output apb2csb_write;
-  output apb2csb_nposted;
-  input  csb2apb_valid;
-  input [31:0] csb2apb_data;
-
-  // CSB to NVDLA
-  input  csb2nvdla_valid;
-  output csb2nvdla_ready;
-  input  [15:0] csb2nvdla_addr;
-  input  [31:0] csb2nvdla_wdat;
-  input  csb2nvdla_write;
-  input  csb2nvdla_nposted;
-  output nvdla2csb_valid;
-  output [31:0] nvdla2csb_data;
-  output nvdla2csb_wr_complete;
-
-  // AXI
-  output dbb_aw_awvalid;
-  input  dbb_aw_awready;
-  output [7:0] dbb_aw_awid;
-  output [3:0] dbb_aw_awlen;
-  output [63:0] dbb_aw_awaddr;
-  
-  output dbb_w_wvalid;
-  input  dbb_w_wready;
-  output [511:0] dbb_w_wdata;
-  output [63:0] dbb_w_wstrb;
-  output dbb_w_wlast;
-
-  input  dbb_b_bvalid;
-  output dbb_b_bready;
-  input  [7:0] dbb_b_bid;
-
-  output dbb_ar_arvalid;
-  input  dbb_ar_arready;
-  output [7:0] dbb_ar_arid;
-  output [3:0] dbb_ar_arlen;
-  output [63:0] dbb_ar_araddr;
-
-  input  dbb_r_rvalid;
-  output dbb_r_rready;
-  input  [7:0] dbb_r_rid;
-  input  dbb_r_rlast;
-  input  [511:0] dbb_r_rdata;
+  input  dbb_r_rvalid;                //|< i
+  output dbb_r_rready;                //|> o
+  input  [7:0] dbb_r_rid;             //|< i
+  input  dbb_r_rlast;                 //|< i
+  input  [511:0] dbb_r_rdata;         //|< i
 
   // Interrupt
   output dla_intr;
-  output dla_intr,
+);
+
+  // APB to CSB
+  logic apb2csb_valid;               //|> o
+  logic  apb2csb_ready;               //|< i
+  logic [15:0] apb2csb_addr;         //|> o
+  logic [31:0] apb2csb_wdat;         //|> o
+  logic apb2csb_write;               //|> o
+  logic apb2csb_nposted;             //|> o
+  logic  csb2apb_valid;               //|< i
+  logic [31:0] csb2apb_data;          //|< i
+
+  // CSB to NVDLA
+  logic  csb2nvdla_valid;             //|< i
+  logic csb2nvdla_ready;             //|> o
+  logic  [15:0] csb2nvdla_addr;       //|< i
+  logic  [31:0] csb2nvdla_wdat;       //|< i
+  logic  csb2nvdla_write;             //|< i
+  logic  csb2nvdla_nposted;           //|< i
+  logic nvdla2csb_valid;             //|> o
+  logic [31:0] nvdla2csb_data;       //|> o
+  logic nvdla2csb_wr_complete;       //|> o
 
   // Power bus
-  input  [31:0] nvdla_pwrbus_ram_c_pd,
-  input  [31:0] nvdla_pwrbus_ram_ma_pd,
-  input  [31:0] nvdla_pwrbus_ram_mb_pd,
-  input  [31:0] nvdla_pwrbus_ram_p_pd,
-  input  [31:0] nvdla_pwrbus_ram_o_pd,
-  input  [31:0] nvdla_pwrbus_ram_a_pd
+  logic  [31:0] nvdla_pwrbus_ram_c_pd;
+  logic  [31:0] nvdla_pwrbus_ram_ma_pd;
+  logic  [31:0] nvdla_pwrbus_ram_mb_pd;
+  logic  [31:0] nvdla_pwrbus_ram_p_pd;
+  logic  [31:0] nvdla_pwrbus_ram_o_pd;
+  logic  [31:0] nvdla_pwrbus_ram_a_pd;
 
 // APB to CSB
 NV_NVDLA_apb2csb apb2csb (
@@ -218,7 +161,7 @@ NV_nvdla nvdla_i (
   .nvdla_core2dbb_r_rready       (dbb_r_rready),                  //|> o
   .nvdla_core2dbb_r_rid          (dbb_r_rid),                     //|< i
   .nvdla_core2dbb_r_rlast        (dbb_r_rlast),                   //|< i
-  .nvdla_core2dbb_r_rdata        (dbb_r_rdata)                    //|< i
+  .nvdla_core2dbb_r_rdata        (dbb_r_rdata),                   //|< i
 
   .dla_intr                      (dla_intr),                      //|> o
 
