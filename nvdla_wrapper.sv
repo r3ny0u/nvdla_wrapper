@@ -1,59 +1,59 @@
 module nvdla_wrapper (
   // Clock
-  input  dla_core_clk;                //|< i
-  input  dla_csb_clk;                 //|< i
-  input  global_clk_ovr_on;           //|< i
-  input  tmc2slcg_disable_clock_gating;//|< i
+  input  dla_core_clk,                //|< i
+  input  dla_csb_clk,                 //|< i
+  input  global_clk_ovr_on,           //|< i
+  input  tmc2slcg_disable_clock_gating,//|< i
 
   // Reset
-  input  dla_reset_rstn;              //|< i
-  input  direct_reset_;               //|< i
+  input  dla_reset_rstn,              //|< i
+  input  direct_reset_,               //|< i
 
   // Test mode
-  input  test_mode;                   //|< i
+  input  test_mode,                   //|< i
 
   // APB
-  input pclk;                         //|< i
-  input prstn;                        //|< i
-  input psel;                         //|< i
-  input penable;                      //|< i
-  input pwrite;                       //|< i
-  input [31:0] paddr;                 //|< i
-  input [31:0] pwdata;                //|< i
-  output [31:0] prdata;               //|> o
-  output pready;                      //|> o
+  input pclk,                         //|< i
+  input prstn,                        //|< i
+  input psel,                         //|< i
+  input penable,                      //|< i
+  input pwrite,                       //|< i
+  input [31:0] paddr,                 //|< i
+  input [31:0] pwdata,                //|< i
+  output [31:0] prdata,               //|> o
+  output pready,                      //|> o
 
   // AXI
-  output dbb_aw_awvalid;              //|> o
-  input  dbb_aw_awready;              //|< i
-  output [7:0] dbb_aw_awid;           //|> o
-  output [3:0] dbb_aw_awlen;          //|> o
-  output [63:0] dbb_aw_awaddr;        //|> o
+  output dbb_aw_awvalid,              //|> o
+  input  dbb_aw_awready,              //|< i
+  output [7:0] dbb_aw_awid,           //|> o
+  output [3:0] dbb_aw_awlen,          //|> o
+  output [63:0] dbb_aw_awaddr,        //|> o
   
-  output dbb_w_wvalid;                //|> o
-  input  dbb_w_wready;                //|< i
-  output [511:0] dbb_w_wdata;         //|> o
-  output [63:0] dbb_w_wstrb;          //|> o
-  output dbb_w_wlast;                 //|> o
+  output dbb_w_wvalid,                //|> o
+  input  dbb_w_wready,                //|< i
+  output [511:0] dbb_w_wdata,         //|> o
+  output [63:0] dbb_w_wstrb,          //|> o
+  output dbb_w_wlast,                 //|> o
 
-  input  dbb_b_bvalid;                //|< i
-  output dbb_b_bready;                //|> o
-  input  [7:0] dbb_b_bid;             //|< i
+  input  dbb_b_bvalid,                //|< i
+  output dbb_b_bready,                //|> o
+  input  [7:0] dbb_b_bid,             //|< i
 
-  output dbb_ar_arvalid;              //|> o
-  input  dbb_ar_arready;              //|< i
-  output [7:0] dbb_ar_arid;           //|> o
-  output [3:0] dbb_ar_arlen;          //|> o
-  output [63:0] dbb_ar_araddr;        //|> o
+  output dbb_ar_arvalid,              //|> o
+  input  dbb_ar_arready,              //|< i
+  output [7:0] dbb_ar_arid,           //|> o
+  output [3:0] dbb_ar_arlen,          //|> o
+  output [63:0] dbb_ar_araddr,        //|> o
 
-  input  dbb_r_rvalid;                //|< i
-  output dbb_r_rready;                //|> o
-  input  [7:0] dbb_r_rid;             //|< i
-  input  dbb_r_rlast;                 //|< i
-  input  [511:0] dbb_r_rdata;         //|< i
+  input  dbb_r_rvalid,                //|< i
+  output dbb_r_rready,                //|> o
+  input  [7:0] dbb_r_rid,             //|< i
+  input  dbb_r_rlast,                 //|< i
+  input  [511:0] dbb_r_rdata,         //|< i
 
   // Interrupt
-  output dla_intr;
+  output dla_intr,                    //|> o
 );
 
   // APB to CSB
